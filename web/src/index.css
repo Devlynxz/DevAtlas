@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface-light text-ink-primary font-body antialiased;
+  }
+
+  html.dark body {
+    @apply bg-surface-dark text-ink-invert;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-slate-950;
+  }
+}
+
+/*
+ * Global safety net for prefers-reduced-motion: neutralizes every plain CSS
+ * transition/animation (hover states, Tailwind `transition` utilities, etc.)
+ * sitewide. framer-motion effects are handled separately via its
+ * useReducedMotion() hook where they're used, since JS-driven motion values
+ * aren't touched by this rule.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .prose-devatlas {
+    @apply max-w-none text-ink-secondary dark:text-slate-300 leading-relaxed;
+  }
+  .prose-devatlas h1, .prose-devatlas h2, .prose-devatlas h3 {
+    @apply text-ink-primary dark:text-ink-invert font-heading font-bold mt-8 mb-4;
+  }
+  .prose-devatlas p {
+    @apply mb-4;
+  }
+  .prose-devatlas a {
+    @apply text-primary-600 dark:text-primary-400 underline underline-offset-2;
+  }
+  .prose-devatlas code {
+    @apply bg-slate-100 dark:bg-slate-800 rounded px-1.5 py-0.5 text-sm;
+  }
+  .prose-devatlas pre {
+    @apply bg-slate-900 text-slate-100 rounded-xl p-4 overflow-x-auto mb-4;
+  }
+  .prose-devatlas pre code {
+    @apply bg-transparent p-0;
+  }
+  .prose-devatlas ul, .prose-devatlas ol {
+    @apply mb-4 pl-6;
+  }
+  .prose-devatlas ul {
+    @apply list-disc;
+  }
+  .prose-devatlas ol {
+    @apply list-decimal;
+  }
+  .prose-devatlas blockquote {
+    @apply border-l-4 border-primary-500 pl-4 italic text-ink-secondary dark:text-slate-400 mb-4;
+  }
+  .prose-devatlas img {
+    @apply rounded-xl mb-4;
+  }
+}
+
+/*
+ * Custom syntax-highlighting theme for rehype-highlight code blocks.
+ * Deliberately kept outside any @layer block: these "hljs-*" class names
+ * are injected at runtime by rehype-highlight and never appear literally
+ * in scanned source files, so Tailwind's content-based purge would strip
+ * them if they lived inside @layer.
+ */
+.hljs {
+  color: #e2e8f0;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #94a3b8;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-operator {
+  color: #60a5fa;
+}
+.hljs-string,
+.hljs-attr,
+.hljs-regexp,
+.hljs-addition {
+  color: #34d399;
+}
+.hljs-number,
+.hljs-deletion {
+  color: #fb923c;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #22d3ee;
+}
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-name,
+.hljs-tag {
+  color: #c084fc;
+}
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #fbbf24;
+}
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #f472b6;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
