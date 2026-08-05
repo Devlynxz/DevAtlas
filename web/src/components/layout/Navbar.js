@@ -62,6 +62,7 @@ export default function Navbar() {
       navigate(`/articles?search=${encodeURIComponent(searchValue.trim())}`);
       setSearchOpen(false);
       setSearchValue("");
+      setMobileOpen(false);
     }
   };
 
@@ -77,7 +78,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Logo size={32} className="text-xl" />
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV_LINKS.map((link) => (
             <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
               {({ isActive }) => (
@@ -187,7 +188,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-ink-secondary md:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-ink-secondary lg:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
@@ -198,8 +199,17 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-slate-200 px-6 py-4 md:hidden dark:border-slate-800">
+        <div className="border-t border-slate-200 px-6 py-4 lg:hidden dark:border-slate-800">
           <div className="flex flex-col gap-4">
+            <form onSubmit={handleSearchSubmit} className="relative sm:hidden">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" />
+              <input
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder="Search articles..."
+                className="w-full rounded-full border border-slate-300 bg-white py-2 pl-10 pr-4 text-sm outline-none focus:border-primary-500 dark:border-slate-700 dark:bg-slate-900"
+              />
+            </form>
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.to}

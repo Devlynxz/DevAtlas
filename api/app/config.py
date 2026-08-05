@@ -14,6 +14,12 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "codeseeker2023")
 ALGORITHM = os.environ.get("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", 10))
 
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
+
 class AsyncDatabaseSession:
 
     def __init__(self) -> None:

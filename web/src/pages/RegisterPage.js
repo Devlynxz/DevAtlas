@@ -97,6 +97,8 @@ export default function RegisterPage() {
                 maxDate={new Date()}
                 placeholderText="Select date"
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-ink-primary outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-ink-invert"
+                portalId="datepicker-portal"
+                withPortal
                 required
               />
             </label>

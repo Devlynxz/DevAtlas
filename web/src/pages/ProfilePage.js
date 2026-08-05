@@ -11,6 +11,8 @@ import Button from "../components/ui/Button";
 import Avatar from "../components/ui/Avatar";
 import Spinner from "../components/ui/Spinner";
 
+const DEFAULT_AVATAR_SUFFIX = "/media/avatars/default.png";
+
 export default function ProfilePage() {
   const { user, loading, refreshProfile } = useAuth();
   const [form, setForm] = useState({
@@ -113,13 +115,15 @@ export default function ProfilePage() {
             {uploadingAvatar ? (
               <p className="mt-1 text-xs text-primary-600 dark:text-primary-400">Updating avatar...</p>
             ) : (
-              <button
-                type="button"
-                onClick={handleRemoveAvatar}
-                className="mt-1 flex items-center gap-1 text-xs text-ink-muted transition hover:text-red-500"
-              >
-                <Trash2 className="h-3 w-3" /> Remove photo
-              </button>
+              user.profile && !user.profile.endsWith(DEFAULT_AVATAR_SUFFIX) && (
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  className="mt-1 flex items-center gap-1 text-xs text-ink-muted transition hover:text-red-500"
+                >
+                  <Trash2 className="h-3 w-3" /> Remove photo
+                </button>
+              )
             )}
           </div>
         </div>

@@ -47,7 +47,7 @@ class PostService:
             "reading_time": post.reading_time,
             "published_at": post.published_at,
             "created_at": post.created_at,
-            "category": {"name": post.category.name, "slug": post.category.slug} if post.category else None,
+            "category": {"id": post.category.id, "name": post.category.name, "slug": post.category.slug} if post.category else None,
             "author": PostService._serialize_author(post.author),
         }
 
