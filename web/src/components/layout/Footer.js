@@ -19,7 +19,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div>
-            <Logo size={32} className="text-xl" />
+            <Logo size={44} className="text-2xl" />
             <p className="mt-4 max-w-xs text-sm text-ink-secondary dark:text-slate-400">
               Explore. Build. Share Knowledge. A modern destination for developers to learn and
               grow.

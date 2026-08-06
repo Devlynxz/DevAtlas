@@ -54,7 +54,7 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto flex max-w-md flex-col px-6 py-16">
       <div className="mb-8 text-center">
-        <LogoMark size={48} className="mx-auto mb-4" />
+        <LogoMark size={64} className="mx-auto mb-4" />
         <h1 className="font-heading text-2xl font-extrabold text-ink-primary dark:text-ink-invert">
           Join DevAtlas
         </h1>

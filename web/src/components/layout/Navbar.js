@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Logo size={32} className="text-xl" />
+        <Logo size={44} className="text-2xl" />
 
         <nav className="hidden items-center gap-7 lg:flex">
           {NAV_LINKS.map((link) => (
