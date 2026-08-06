@@ -16,7 +16,7 @@ from app.repository.category import CategoryRepository
 from app.repository.post import PostRepository
 from app.repository.users import UsersRepository
 from app.schema import PostCreate, ProfileUpdateSchema, RegisterSchema
-from app.service.auth_service import AuthService
+from app.service.auth_service import AuthService, generate_role
 from app.service.category import CategoryService
 from app.service.post import PostService
 from app.service.users import UserService
@@ -425,6 +425,7 @@ Cost optimization without visibility is guesswork. Tag everything, set up cost a
 
 async def seed():
     db.init()
+    await generate_role()
 
     print("Seeding categories...")
     category_ids = {}
