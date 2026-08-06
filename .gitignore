@@ -8,3 +8,7 @@ Thumbs.db
 
 # Claude Code / agent-harness local state (not part of the project)
 .claude/
+
+# Raw logo source files (large originals) - processed assets live in
+# web/public/ and web/src/assets/, which are what the app actually uses
+web/logo/
