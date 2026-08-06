@@ -101,21 +101,34 @@ Vercel project:
 | ---------------------- | ----------------------------------------- |
 | `REACT_APP_API_URL`    | Your deployed backend's public URL        |
 
-### Backend → Railway (or any host that runs a long-lived process)
+### Backend → Render (free web service) + Neon (free Postgres)
 
-`api/railway.json` sets the start command and runs migrations + demo-data
-seeding (`alembic upgrade head && python seed_data.py`, idempotent) before every
-deploy. To deploy on Railway:
+Render's own free Postgres auto-deletes after 30 days, so the database lives on
+Neon instead — its free tier is permanent (scales to zero when idle, but never
+expires or gets deleted).
 
-1. Create a project from this GitHub repo, add a **PostgreSQL** plugin.
-2. On the API service, set **Root Directory** to `api`.
-3. Set environment variables: `SECRET_KEY`, `ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`,
-   and `CORS_ORIGINS` (your Vercel URL, e.g. `https://your-app.vercel.app`).
-   `DATABASE_URL` is auto-injected by the Postgres plugin — the app normalizes
-   whatever scheme it provides (`postgres://` / `postgresql://` /
-   `postgresql+asyncpg://`) to what asyncpg needs.
-4. Deploy, then copy the service's public domain into the frontend's
+1. **Neon**: create a project, copy its connection string (looks like
+   `postgresql://user:pass@host/db?sslmode=require&channel_binding=require`).
+   The app strips the `sslmode`/`channel_binding` params (asyncpg doesn't
+   understand them) and translates them into the SSL connect args asyncpg
+   actually needs, so you can paste Neon's string as-is.
+2. **Render**: create a Blueprint from this GitHub repo — it reads the root
+   `render.yaml`, which builds/starts the API from `api/` on the free plan and
+   runs `alembic upgrade head && python seed_data.py` (idempotent) before every
+   deploy. When prompted, set:
+   - `DATABASE_URL` → the Neon connection string from step 1
+   - `SECRET_KEY` → any random secret
+   - `CORS_ORIGINS` → your Vercel URL, e.g. `https://your-app.vercel.app`
+3. Deploy, then copy the Render service's public URL into the frontend's
    `REACT_APP_API_URL` on Vercel and redeploy the frontend.
+
+Note: the free Render service spins down after 15 minutes idle, so the first
+request after a period of inactivity takes a few extra seconds to wake up.
+
+`api/railway.json` is also included if you'd rather deploy on
+[Railway](https://railway.com) instead (paid usage-based, but simpler — one
+service instead of two) — same env vars, `DATABASE_URL` comes from Railway's
+own Postgres plugin in that case.
 
 Uploaded media (avatars, cover images) is written to local disk (`api/media/`),
 which is ephemeral on most PaaS hosts — attach a persistent volume mounted at

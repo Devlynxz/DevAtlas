@@ -1,4 +1,5 @@
 import os
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -7,17 +8,27 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 
-def _normalize_db_url(url: str) -> str:
+def _normalize_db_url(url: str):
     """Rewrite postgres://... / postgresql://... (as provided by most hosts'
-    managed Postgres plugins) to the postgresql+asyncpg:// scheme asyncpg needs."""
+    managed Postgres plugins) to the postgresql+asyncpg:// scheme asyncpg needs,
+    and translate libpq-only query params (sslmode, channel_binding — used by
+    e.g. Neon) that asyncpg's driver doesn't understand into connect_args."""
     if url.startswith("postgres://"):
         url = "postgresql://" + url[len("postgres://"):]
     if url.startswith("postgresql://"):
         url = "postgresql+asyncpg://" + url[len("postgresql://"):]
-    return url
+
+    parts = urlsplit(url)
+    query = dict(parse_qsl(parts.query))
+    connect_args = {}
+    if query.pop("sslmode", None) == "require":
+        connect_args["ssl"] = "require"
+    query.pop("channel_binding", None)
+    clean_url = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
+    return clean_url, connect_args
 
 
-DB_CONFIG = _normalize_db_url(os.environ.get(
+DB_CONFIG, DB_CONNECT_ARGS = _normalize_db_url(os.environ.get(
     "DATABASE_URL", "postgresql+asyncpg://postgres:1234@localhost:5432/postgres"
 ))
 
@@ -41,7 +52,7 @@ class AsyncDatabaseSession:
         return getattr(self.session,name)
 
     def init(self):
-        self.engine = create_async_engine(DB_CONFIG,future=True, echo=True)
+        self.engine = create_async_engine(DB_CONFIG, future=True, echo=True, connect_args=DB_CONNECT_ARGS)
         self.session = sessionmaker(self.engine, expire_on_commit=False, class_=AsyncSession)()
 
 

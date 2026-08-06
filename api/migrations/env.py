@@ -3,16 +3,15 @@ import os
 from logging.config import fileConfig
 
 from dotenv import load_dotenv
-from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel
 
 from alembic import context
 
 
-from app.config import DB_CONFIG
+from app.config import DB_CONFIG, DB_CONNECT_ARGS
 from app.model import *
 
 load_dotenv()
@@ -78,13 +77,11 @@ async def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = AsyncEngine(
-        engine_from_config(
-            config.get_section(config.config_ini_section),
-            prefix="sqlalchemy.",
-            poolclass=pool.NullPool,
-            future=True,
-        )
+    connectable = create_async_engine(
+        DB_CONFIG,
+        connect_args=DB_CONNECT_ARGS,
+        poolclass=pool.NullPool,
+        future=True,
     )
 
     async with connectable.connect() as connection:
