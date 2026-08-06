@@ -6,9 +6,20 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-DB_CONFIG = os.environ.get(
+
+def _normalize_db_url(url: str) -> str:
+    """Rewrite postgres://... / postgresql://... (as provided by most hosts'
+    managed Postgres plugins) to the postgresql+asyncpg:// scheme asyncpg needs."""
+    if url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+    return url
+
+
+DB_CONFIG = _normalize_db_url(os.environ.get(
     "DATABASE_URL", "postgresql+asyncpg://postgres:1234@localhost:5432/postgres"
-)
+))
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "codeseeker2023")
 ALGORITHM = os.environ.get("ALGORITHM", "HS256")

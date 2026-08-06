@@ -12,6 +12,7 @@ from sqlmodel import SQLModel
 from alembic import context
 
 
+from app.config import DB_CONFIG
 from app.model import *
 
 load_dotenv()
@@ -21,7 +22,7 @@ load_dotenv()
 config = context.config
 
 if os.environ.get("DATABASE_URL"):
-    config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
+    config.set_main_option("sqlalchemy.url", DB_CONFIG)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

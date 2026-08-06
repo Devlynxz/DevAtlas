@@ -85,6 +85,42 @@ The backend reads its configuration from `api/.env` (see `api/.env.example`):
 | `ALGORITHM`                    | JWT signing algorithm (default `HS256`) |
 | `ACCESS_TOKEN_EXPIRE_MINUTES`  | Token lifetime in minutes             |
 
+## Deployment
+
+DevAtlas deploys as two separate services — a static React frontend and an async
+FastAPI backend — because the backend holds a long-lived database session that
+doesn't fit a serverless model.
+
+### Frontend → Vercel
+
+The repo root's `vercel.json` builds `web/` and serves `web/build`, with an SPA
+rewrite so client-side routes don't 404. Set one environment variable on the
+Vercel project:
+
+| Variable              | Value                                    |
+| ---------------------- | ----------------------------------------- |
+| `REACT_APP_API_URL`    | Your deployed backend's public URL        |
+
+### Backend → Railway (or any host that runs a long-lived process)
+
+`api/railway.json` sets the start command and runs migrations + demo-data
+seeding (`alembic upgrade head && python seed_data.py`, idempotent) before every
+deploy. To deploy on Railway:
+
+1. Create a project from this GitHub repo, add a **PostgreSQL** plugin.
+2. On the API service, set **Root Directory** to `api`.
+3. Set environment variables: `SECRET_KEY`, `ALGORITHM`, `ACCESS_TOKEN_EXPIRE_MINUTES`,
+   and `CORS_ORIGINS` (your Vercel URL, e.g. `https://your-app.vercel.app`).
+   `DATABASE_URL` is auto-injected by the Postgres plugin — the app normalizes
+   whatever scheme it provides (`postgres://` / `postgresql://` /
+   `postgresql+asyncpg://`) to what asyncpg needs.
+4. Deploy, then copy the service's public domain into the frontend's
+   `REACT_APP_API_URL` on Vercel and redeploy the frontend.
+
+Uploaded media (avatars, cover images) is written to local disk (`api/media/`),
+which is ephemeral on most PaaS hosts — attach a persistent volume mounted at
+`api/media` if uploads need to survive redeploys.
+
 ## Author
 
 **Erlyn Quimson**
