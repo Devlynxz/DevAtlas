@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "python",
+  "packages": {
+    "python": "3.10"
+  },
+  "steps": {
+    "install": {
+      "commands": ["pip install -r requirements.txt"]
+    }
+  }
+}
